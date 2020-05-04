@@ -1,7 +1,6 @@
 package com.asociateapp.pixabaysearcher.presentation
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,7 +18,7 @@ import com.asociateapp.pixabaysearcher.presentation.viewmodel.getViewModel
 import com.asociateapp.pixabaysearcher.utils.changeVisibility
 import kotlinx.android.synthetic.main.activity_gallery.*
 
-class GalleryActivity : BaseActivity() {
+class GalleryActivity : BaseActivity(), GalleryAdapter.OnImageClickedListener {
 
     private val viewModel by lazy {
         getViewModel {
@@ -33,7 +32,7 @@ class GalleryActivity : BaseActivity() {
         setContentView(R.layout.activity_gallery)
 
         toolbarSetUp()
-        viewModel.search("Libros")
+        viewModel.search(viewModel.getSearchTerm())
         viewModel.images.observe(this, Observer {
             pb.changeVisibility(it.data.isEmpty())
             if (it is Default) {
@@ -51,11 +50,15 @@ class GalleryActivity : BaseActivity() {
     }
 
     private fun setUpImagesList(images: List<Image>) {
-        val adapter = GalleryAdapter(images)
+        val adapter = GalleryAdapter(images).also { it.setImageClickListener(this) }
         val layoutManager = GridLayoutManager(this, 3)
 
         rv_images.layoutManager = layoutManager
         rv_images.adapter = adapter
+    }
+
+    override fun onImageClick(image: Image) {
+        
     }
 
 }

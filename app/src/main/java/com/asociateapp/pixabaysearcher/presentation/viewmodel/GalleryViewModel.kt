@@ -24,6 +24,12 @@ class GalleryViewModel(
         images.value = Default(emptyList(), 0)
     }
 
+    fun getActivityTitle() = galleryConfig.getActivityTitle()
+
+    fun showUpButton() = galleryConfig.showUpButton()
+
+    fun getSearchTerm() = galleryConfig.getSearchTerm()
+
     @SuppressLint("CheckResult")
     fun search(term: String) {
         repository.searchImagesByTerm(Constants.API_KEY, galleryConfig.getImagesPerPage(), term)
@@ -52,8 +58,4 @@ class GalleryViewModel(
     private fun currentPage() = this.images.value?.page ?: 0
 
     private fun currentData() = this.images.value?.data ?: emptyList()
-
-    fun getActivityTitle() = galleryConfig.getActivityTitle()
-
-    fun showUpButton() = galleryConfig.showUpButton()
 }
