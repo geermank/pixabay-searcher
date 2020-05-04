@@ -3,7 +3,9 @@ package com.asociateapp.pixabaysearcher.presentation.viewmodel
 import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.asociateapp.pixabaysearcher.Configurator
 import com.asociateapp.pixabaysearcher.data.ImagesRepository
+import com.asociateapp.pixabaysearcher.data.api.PixabayApi
 import com.asociateapp.pixabaysearcher.data.models.Image
 import com.asociateapp.pixabaysearcher.data.models.Response
 import com.asociateapp.pixabaysearcher.presentation.models.Default
@@ -12,7 +14,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class GalleryViewModel(
-    private val repository: ImagesRepository
+    private val repository: ImagesRepository,
+    private val galleryConfig: Configurator
 ) : ViewModel() {
 
     val images = MutableLiveData<State<List<Image>>>()
@@ -23,7 +26,7 @@ class GalleryViewModel(
 
     @SuppressLint("CheckResult")
     fun search(term: String) {
-        repository.searchImagesByTerm(term)
+        repository.searchImagesByTerm(PixabayApi.API_KEY, galleryConfig.getImagesPerPage(), term)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::onImagesReceived, this::onError)
@@ -49,4 +52,8 @@ class GalleryViewModel(
     private fun currentPage() = this.images.value?.page ?: 0
 
     private fun currentData() = this.images.value?.data ?: emptyList()
+
+    fun getActivityTitle() = galleryConfig.getActivityTitle()
+
+    fun showUpButton() = galleryConfig.showUpButton()
 }

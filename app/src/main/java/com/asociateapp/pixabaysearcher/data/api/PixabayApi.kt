@@ -5,6 +5,8 @@ import com.asociateapp.pixabaysearcher.data.models.Response
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
+import retrofit2.http.QueryName
 
 interface PixabayApi {
 
@@ -14,10 +16,6 @@ interface PixabayApi {
     }
 
     @GET("api/")
-    fun search(
-        @Query("key") key: String,
-        @Query("q") term: String,
-        @Query("per_page") perPage: Int
-    ): Single<Response<List<Image>>>
+    fun search(@QueryMap params: Map<String, String>): Single<Response<List<Image>>>
 
 }

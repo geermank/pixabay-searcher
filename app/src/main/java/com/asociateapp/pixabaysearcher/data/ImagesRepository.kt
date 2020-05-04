@@ -4,6 +4,7 @@ import com.asociateapp.pixabaysearcher.data.api.ImagesApi
 
 class ImagesRepository(private val imagesApi: ImagesApi) {
 
-    fun searchImagesByTerm(value: String) = imagesApi.searchByTerm(value)
+    fun searchImagesByTerm(apiKey: String, itemsPerPage: Int, value: String) =
+        imagesApi.searchByTerm(apiKey, itemsPerPage, value)
 
 }
