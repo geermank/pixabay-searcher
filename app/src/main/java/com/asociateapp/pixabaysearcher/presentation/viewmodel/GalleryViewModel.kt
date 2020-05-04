@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.asociateapp.pixabaysearcher.Configurator
 import com.asociateapp.pixabaysearcher.data.ImagesRepository
-import com.asociateapp.pixabaysearcher.data.api.Constants
 import com.asociateapp.pixabaysearcher.data.models.Image
 import com.asociateapp.pixabaysearcher.data.models.Response
 import com.asociateapp.pixabaysearcher.presentation.models.Default
@@ -32,7 +31,7 @@ class GalleryViewModel(
 
     @SuppressLint("CheckResult")
     fun search(term: String) {
-        repository.searchImagesByTerm(Constants.API_KEY, galleryConfig.getImagesPerPage(), term)
+        repository.searchImagesByTerm(galleryConfig.getApiKey(), galleryConfig.getImagesPerPage(), term)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::onImagesReceived, this::onError)
