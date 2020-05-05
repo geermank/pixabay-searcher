@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Pixabay Searcher</string>
+    <string name="image_gallery_image_not_saved">No podemos guardar la imagen sin los permisos :(</string>
+    <string name="image_gallery_error_open_config">Configuración</string>
+    <string name="image_gallery_error_saving_image">¡Ups! Ocurrió un error al guardar la imagen</string>
+    <string name="image_gallery_error_saving_image_retry">Reintentar</string>
+    <string name="image_gallery_pictures_album_name">PixabayImages</string>
+</resources>

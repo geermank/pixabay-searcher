@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="lib_short_margin">8dp</dimen>
+    <dimen name="lib_default_margin">16dp</dimen>
+    <dimen name="lib_large_margin">24dp</dimen>
+    <dimen name="lib_xlarge_margin">32dp</dimen>
+    <dimen name="lib_xxlarge_margin">40dp</dimen>
+
+    <dimen name="gallery_image_spacing">1dp</dimen>
+    <integer name="gallery_image_spans">3</integer>
+
+    <dimen name="dialog_image_detail_image_height">300dp</dimen>
+    <dimen name="dialog_image_detail_card_elevation">0dp</dimen>
+</resources>

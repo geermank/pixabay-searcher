@@ -1,2 +1,2 @@
-include ':app'
+include ':imagesearcher', ':testapp'
 rootProject.name='Pixabay Searcher'
