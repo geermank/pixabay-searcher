@@ -5,19 +5,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.asociateapp.pixabaysearcher.R
 import com.asociateapp.pixabaysearcher.utils.*
 import kotlinx.android.synthetic.main.dialog_image_detail.*
 
-class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImageSavedListener {
+internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImageSavedListener {
 
     override fun onImageSaved() {
-        Log.i(TAG, "toko ok")
+        dismiss()
+        Toast.makeText(context, "Iuju, guardamos la imagen", Toast.LENGTH_SHORT).show()
     }
 
     override fun onImageSaveError(message: String, buttonMessage: String, action: () -> Unit) {
-        Log.i(TAG, "upsidupsi")
+
     }
 
     companion object {

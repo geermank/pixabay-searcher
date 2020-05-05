@@ -8,7 +8,7 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import retrofit2.http.QueryName
 
-interface PixabayApi {
+internal interface PixabayApi {
 
     companion object {
         const val API = "https://pixabay.com/"

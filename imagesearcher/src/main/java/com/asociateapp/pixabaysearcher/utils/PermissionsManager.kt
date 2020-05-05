@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 
 private const val PERMISSION_REQUEST_CODE = 11
 
-class PermissionsManager(private val activity: Activity) {
+internal class PermissionsManager(private val activity: Activity) {
 
     private var fragment: Fragment? = null
 

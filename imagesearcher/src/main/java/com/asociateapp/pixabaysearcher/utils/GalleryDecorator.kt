@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class GalleryDecorator(
+internal class GalleryDecorator(
     private val mSizeGridSpacingPx: Int,
     private val mGridSize: Int
 ) : RecyclerView.ItemDecoration() {

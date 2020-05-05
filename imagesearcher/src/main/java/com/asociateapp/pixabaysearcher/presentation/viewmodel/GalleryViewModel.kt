@@ -12,7 +12,7 @@ import com.asociateapp.pixabaysearcher.presentation.models.State
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class GalleryViewModel(
+internal class GalleryViewModel(
     private val repository: ImagesRepository,
     private val galleryConfig: Configurator
 ) : ViewModel() {

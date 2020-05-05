@@ -1,6 +1,6 @@
 package com.asociateapp.pixabaysearcher.data.api
 
-open class BaseApi {
+internal open class BaseApi {
 
     private val apiKeyParam = "key"
     private val editorsChoiceParam = "editors_choice"

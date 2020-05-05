@@ -7,10 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.asociateapp.pixabaysearcher.R
 import com.asociateapp.pixabaysearcher.data.models.Image
 import com.asociateapp.pixabaysearcher.utils.ImageLoader
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_image.view.*
 
-class GalleryAdapter(private val images: List<Image>) : RecyclerView.Adapter<GalleryAdapter.GalleryHolder>() {
+internal class GalleryAdapter(private val images: List<Image>) : RecyclerView.Adapter<GalleryAdapter.GalleryHolder>() {
 
     interface OnImageClickedListener {
         fun onImageClick(image: Image)

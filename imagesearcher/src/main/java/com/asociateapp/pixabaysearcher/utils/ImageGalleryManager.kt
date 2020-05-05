@@ -1,19 +1,25 @@
 package com.asociateapp.pixabaysearcher.utils
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Settings
 import com.asociateapp.pixabaysearcher.R
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.UUID
+import java.util.concurrent.Executors
 
 @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown", "TooManyFunctions")
-class ImageGalleryManager(
+internal class ImageGalleryManager(
     private val context: Context,
     private val permissionsManager: PermissionsManager
 ) : PermissionsManager.OnPermissionsResultListener {
@@ -61,7 +67,7 @@ class ImageGalleryManager(
      * If storage permissions weren't granted, prompts the user to grant them
      */
     fun save(image: Bitmap) {
-        this.temporaryBitmap = image
+        this.temporaryBitmap = Bitmap.createBitmap(image)
         this.permissionsManager.requestPermissionsIfNeeded(permissionsNeededForStorage())
     }
 
@@ -75,48 +81,35 @@ class ImageGalleryManager(
             context.getString(R.string.image_gallery_error_open_config)) { openSettings(context) }
     }
 
-    internal fun createFileFromBitmap(bitmap: Bitmap) {
-        var fileOutputStream: FileOutputStream? = null
-        try {
-            val storageDir: File = createAlbum(context)
-            val image = File.createTempFile(getImageName(), IMAGE_EXTENSION, storageDir)
+    private fun createFileFromBitmap(bitmap: Bitmap) {
+        Executors.newSingleThreadExecutor().submit {
+            val resolver = context.contentResolver
+            val imageCollection = MediaStore.Images.Media.getContentUri(getVolume())
 
-            // send the bitmap to a file
-            fileOutputStream = FileOutputStream(image)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, fileOutputStream)
+            val newImage = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, "${getImageName()}$IMAGE_EXTENSION")
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            }
 
-            // trigger a media scan so that the image shows up in the gallery
-            val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(image))
-            this.context.sendBroadcast(mediaScanIntent)
-            this.callback?.onImageSaved()
-        } catch (ex: Exception) {
-            this.callback?.onImageSaveError(context.getString(R.string.image_gallery_error_saving_image),
-                context.getString(R.string.image_gallery_error_saving_image_retry)) { save(bitmap) }
-        } finally {
-            cleanResources(fileOutputStream, bitmap)
+            val uri = resolver.insert(imageCollection, newImage)
+            uri?.let {
+                resolver.openOutputStream(it)?.use { stream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, stream)
+                    cleanResources(stream, bitmap)
+                }
+            }
         }
     }
 
-    private fun cleanResources(fileOutputStream: FileOutputStream?, bitmap: Bitmap?) {
+    private fun getVolume() = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+        MediaStore.VOLUME_EXTERNAL
+    } else {
+        MediaStore.VOLUME_EXTERNAL_PRIMARY
+    }
+
+    private fun cleanResources(fileOutputStream: OutputStream?, bitmap: Bitmap?) {
         fileOutputStream?.close()
         bitmap?.recycle()
-    }
-
-    /**
-     * Creates an album to save image in local memory
-     *
-     * @return the created directory where the image will be saved
-     */
-    private fun createAlbum(context: Context): File {
-        val storageDir = File(
-            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            getAlbumName(context)
-        )
-        // if the album doesn't exist then create it
-        if (!storageDir.exists() && !storageDir.mkdirs()) {
-            throw RuntimeException("Error creating pictures album")
-        }
-        return storageDir
     }
 
     /**
@@ -141,7 +134,7 @@ class ImageGalleryManager(
     private fun permissionsNeededForStorage() = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
     companion object {
-        private const val JPEG_COMPRESSION_QUALITY = 80
-        private const val IMAGE_EXTENSION = ".jpg"
+        private const val JPEG_COMPRESSION_QUALITY = 100
+        private const val IMAGE_EXTENSION = ".jpeg"
     }
 }
