@@ -6,6 +6,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import com.asociateapp.pixabaysearcher.R
 import java.io.OutputStream
@@ -89,10 +91,16 @@ internal class ImageGalleryManager(
                 resolver.openOutputStream(it)?.use { stream ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, stream)
                     cleanResources(stream, bitmap)
-                    callback?.onImageSaved(it)
+                    notifySuccess(it)
                 }
             }
         }
+    }
+
+    private fun notifySuccess(uri: Uri) {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = Runnable { callback?.onImageSaved(uri) }
+        handler.post(runnable)
     }
 
     private fun getVolume() = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {

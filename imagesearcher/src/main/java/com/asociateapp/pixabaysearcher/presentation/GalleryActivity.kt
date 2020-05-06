@@ -21,6 +21,7 @@ import com.asociateapp.pixabaysearcher.presentation.viewmodel.GalleryViewModel
 import com.asociateapp.pixabaysearcher.presentation.viewmodel.getViewModel
 import com.asociateapp.pixabaysearcher.utils.GalleryDecorator
 import com.asociateapp.pixabaysearcher.utils.changeVisibility
+import com.asociateapp.pixabaysearcher.utils.toast
 import kotlinx.android.synthetic.main.activity_gallery.*
 
 class GalleryActivity : BaseActivity(), GalleryAdapter.OnImageClickedListener, ImageDetailDialog.OnImageInteractListener {
@@ -78,9 +79,10 @@ class GalleryActivity : BaseActivity(), GalleryAdapter.OnImageClickedListener, I
     }
 
     override fun onImageDownloaded(uri: Uri) {
+        toast(R.string.image_gallery_download_success)
         if (viewModel.expectingUriResult()) {
             val extras = Bundle().also { it.putString(Configurator.IMAGE_SEARCHER_SELECTED_IMAGE_URI, uri.toString()) }
-            deliverResult(extras, Configurator.IMAGE_SEARCHER_RC)
+            deliverResult(extras)
         }
     }
 

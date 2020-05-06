@@ -1,7 +1,11 @@
 package com.asociateapp.testapp
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import com.asociateapp.pixabaysearcher.config.Configurator
 import com.asociateapp.pixabaysearcher.config.PixabayConfigBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -23,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                 selectedImageUriIsExpected(expectingUri())
                 showActivityUpButton(showUpButton())
             }
-            startActivity(configBuilder.createIntent())
+            startActivityForResult(configBuilder.createIntent(), Configurator.IMAGE_SEARCHER_RC)
         }
     }
 
@@ -34,4 +38,18 @@ class MainActivity : AppCompatActivity() {
     private fun expectingUri() = cb_expecting_result.isChecked
 
     private fun showUpButton() = cb_show_back.isChecked
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == Configurator.IMAGE_SEARCHER_RC && resultCode == Activity.RESULT_OK) {
+            val uri = data?.getStringExtra(Configurator.IMAGE_SEARCHER_SELECTED_IMAGE_URI)
+
+            tv_uri_result_header.visibility = View.VISIBLE
+            tv_uri_result.visibility = View.VISIBLE
+            tv_uri_result.text = uri
+        }
+
+    }
+
 }

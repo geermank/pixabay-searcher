@@ -5,4 +5,5 @@
     <string name="image_gallery_error_saving_image">¡Ups! Ocurrió un error al guardar la imagen</string>
     <string name="image_gallery_error_saving_image_retry">Reintentar</string>
     <string name="image_gallery_pictures_album_name">PixabayImages</string>
+    <string name="image_gallery_download_success">¡Imagen descargada con éxito!</string>
 </resources>

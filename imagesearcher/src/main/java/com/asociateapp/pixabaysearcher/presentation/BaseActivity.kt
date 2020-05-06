@@ -1,5 +1,6 @@
 package com.asociateapp.pixabaysearcher.presentation
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -14,10 +15,10 @@ abstract class BaseActivity : AppCompatActivity() {
         setStatusBarColor(Color.WHITE)
     }
 
-    protected fun deliverResult(extras: Bundle?, resultCode: Int) {
+    protected fun deliverResult(extras: Bundle?) {
         val intent = Intent()
         extras?.let { intent.putExtras(it) }
-        setResult(resultCode, intent)
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
