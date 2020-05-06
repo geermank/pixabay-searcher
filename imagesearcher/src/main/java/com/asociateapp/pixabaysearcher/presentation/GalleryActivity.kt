@@ -7,10 +7,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.asociateapp.pixabaysearcher.config.Configurator
 import com.asociateapp.pixabaysearcher.R
+import com.asociateapp.pixabaysearcher.config.PixabayConfigurator
 import com.asociateapp.pixabaysearcher.data.ImagesRepository
 import com.asociateapp.pixabaysearcher.data.api.ImagesApi
 import com.asociateapp.pixabaysearcher.data.api.RetrofitWrapper
 import com.asociateapp.pixabaysearcher.data.models.Image
+import com.asociateapp.pixabaysearcher.domain.PixabayGalleryUserCase
 import com.asociateapp.pixabaysearcher.presentation.adapters.GalleryAdapter
 import com.asociateapp.pixabaysearcher.presentation.dialogs.ImageDetailDialog
 import com.asociateapp.pixabaysearcher.presentation.models.Default
@@ -26,9 +28,8 @@ class GalleryActivity : BaseActivity(), GalleryAdapter.OnImageClickedListener, I
     private val viewModel by lazy {
         getViewModel {
             val imagesApi = ImagesApi(RetrofitWrapper().getClient())
-            GalleryViewModel(ImagesRepository(imagesApi),
-                Configurator(intent)
-            )
+            val repository = ImagesRepository(imagesApi)
+            GalleryViewModel(PixabayGalleryUserCase(repository), PixabayConfigurator(intent))
         }
     }
 
@@ -37,7 +38,7 @@ class GalleryActivity : BaseActivity(), GalleryAdapter.OnImageClickedListener, I
         setContentView(R.layout.activity_gallery)
         toolbarSetUp()
 
-        viewModel.search(viewModel.getSearchTerm())
+        viewModel.search()
         viewModel.images.observe(this, Observer {
             pb.changeVisibility(it.data.isEmpty())
             if (it is Default) {
@@ -72,7 +73,8 @@ class GalleryActivity : BaseActivity(), GalleryAdapter.OnImageClickedListener, I
     )
 
     override fun onImageClick(image: Image) {
-        ImageDetailDialog.newInstance(image.largeImageURL).show(supportFragmentManager, ImageDetailDialog.TAG)
+        ImageDetailDialog.newInstance(image.largeImageURL, true)
+            .show(supportFragmentManager, ImageDetailDialog.TAG)
     }
 
     override fun onImageDownloaded(uri: Uri) {

@@ -20,11 +20,15 @@ internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImage
     companion object {
         const val TAG = "ImageDetailDialog"
 
-        fun newInstance(imageUrl: String) = ImageDetailDialog().apply {
-            arguments = Bundle().also { it.putString(IMAGE_URL, imageUrl) }
+        fun newInstance(imageUrl: String, showDownloadOption: Boolean) = ImageDetailDialog().apply {
+            arguments = Bundle().also {
+                it.putString(IMAGE_URL, imageUrl)
+                it.putBoolean(SHOW_DOWNLOAD_OPTION, showDownloadOption)
+            }
         }
 
         private const val IMAGE_URL = "IMAGE_URL"
+        private const val SHOW_DOWNLOAD_OPTION = "SHOW_DOWNLOAD_OPTION"
     }
 
     private val permissionManager by lazy {
@@ -61,10 +65,20 @@ internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImage
         super.onActivityCreated(savedInstanceState)
         load(getImageUrl())
         setCloseClickListener()
-        setOnSaveClickListener()
+        setUpDownloadOption(isDownloadOptionEnable())
     }
 
-    private fun setOnSaveClickListener() {
+    private fun isDownloadOptionEnable() = arguments!!.getBoolean(SHOW_DOWNLOAD_OPTION)
+
+    private fun setUpDownloadOption(isDownloadOptionEnable: Boolean) {
+        if (isDownloadOptionEnable) {
+            setOnDownloadClickListener()
+        } else {
+            iv_download.changeVisibility(false)
+        }
+    }
+
+    private fun setOnDownloadClickListener() {
         iv_download.setOnClickListener {
             val bitmap = iv_image.asBitmap()
             galleryManager?.save(bitmap)

@@ -7,13 +7,14 @@ import com.asociateapp.pixabaysearcher.config.Configurator
 import com.asociateapp.pixabaysearcher.data.ImagesRepository
 import com.asociateapp.pixabaysearcher.data.models.Image
 import com.asociateapp.pixabaysearcher.data.models.Response
+import com.asociateapp.pixabaysearcher.domain.GalleryUseCase
 import com.asociateapp.pixabaysearcher.presentation.models.Default
 import com.asociateapp.pixabaysearcher.presentation.models.State
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 internal class GalleryViewModel(
-    private val repository: ImagesRepository,
+    private val useCase: GalleryUseCase,
     private val galleryConfig: Configurator
 ) : ViewModel() {
 
@@ -27,13 +28,11 @@ internal class GalleryViewModel(
 
     fun showUpButton() = galleryConfig.showUpButton()
 
-    fun getSearchTerm() = galleryConfig.getSearchTerm()
-
     fun expectingUriResult() = galleryConfig.expectingUriResult()
 
     @SuppressLint("CheckResult")
-    fun search(term: String) {
-        repository.searchImagesByTerm(galleryConfig.getApiKey(), galleryConfig.getImagesPerPage(), term)
+    fun search() {
+        useCase.getImages(galleryConfig)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::onImagesReceived, this::onError)
@@ -44,15 +43,13 @@ internal class GalleryViewModel(
     }
 
     private fun onError(error: Throwable) {
+        // TODO handle error
         error.printStackTrace()
     }
 
     private fun updateCurrentData(newImages: List<Image>) {
-        val loadedImages = currentData().toMutableList()
-        loadedImages.addAll(newImages)
-
+        val loadedImages = currentData().toMutableList().also { it.addAll(newImages) }
         val newPage = currentPage() + 1
-
         this.images.value = Default(loadedImages, newPage)
     }
 

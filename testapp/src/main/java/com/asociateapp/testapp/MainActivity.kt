@@ -2,7 +2,7 @@ package com.asociateapp.testapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.asociateapp.pixabaysearcher.config.ConfigBuilder
+import com.asociateapp.pixabaysearcher.config.PixabayConfigBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -16,12 +16,14 @@ class MainActivity : AppCompatActivity() {
         et_api_key.setText(testApiKey)
 
         btn_start_image_gallery.setOnClickListener {
-            val configBuilder = ConfigBuilder(this, testApiKey)
-            configBuilder.setActivityTitle(getActivityTitle())
-                .setSearchTerm(getSearchTerm())
-                .selectedImageUriIsExpected(expectingUri())
-                .showActivityUpButton(showUpButton())
-            startActivity(configBuilder.build())
+            val configBuilder = PixabayConfigBuilder(this, testApiKey)
+            configBuilder.apply {
+                setActivityTitle(getActivityTitle())
+                setSearchTerm(getSearchTerm())
+                selectedImageUriIsExpected(expectingUri())
+                showActivityUpButton(showUpButton())
+            }
+            startActivity(configBuilder.createIntent())
         }
     }
 
