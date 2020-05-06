@@ -3,7 +3,7 @@ package com.asociateapp.pixabaysearcher.presentation.viewmodel
 import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.asociateapp.pixabaysearcher.Configurator
+import com.asociateapp.pixabaysearcher.config.Configurator
 import com.asociateapp.pixabaysearcher.data.ImagesRepository
 import com.asociateapp.pixabaysearcher.data.models.Image
 import com.asociateapp.pixabaysearcher.data.models.Response
@@ -28,6 +28,8 @@ internal class GalleryViewModel(
     fun showUpButton() = galleryConfig.showUpButton()
 
     fun getSearchTerm() = galleryConfig.getSearchTerm()
+
+    fun expectingUriResult() = galleryConfig.expectingUriResult()
 
     @SuppressLint("CheckResult")
     fun search(term: String) {

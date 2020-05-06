@@ -3,17 +3,11 @@ package com.asociateapp.pixabaysearcher.utils
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
-import android.provider.Settings
 import com.asociateapp.pixabaysearcher.R
-import java.io.File
-import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.UUID
 import java.util.concurrent.Executors
@@ -29,13 +23,13 @@ internal class ImageGalleryManager(
          * Notifies when the Bitmap was saved in the user's
          * gallery successfully
          */
-        fun onImageSaved()
+        fun onImageSaved(imageUri: Uri)
 
         /**
          * Notifies when an error occurs while trying to
          * save a Bitmap in the user's gallery
          */
-        fun onImageSaveError(message: String, buttonMessage: String, action: () -> Unit)
+        fun onImageSaveError(message: String)
     }
 
     init {
@@ -77,8 +71,7 @@ internal class ImageGalleryManager(
     }
 
     override fun onPermissionsDenied() {
-        callback?.onImageSaveError(context.getString(R.string.image_gallery_image_not_saved),
-            context.getString(R.string.image_gallery_error_open_config)) { openSettings(context) }
+        callback?.onImageSaveError(context.getString(R.string.image_gallery_image_not_saved))
     }
 
     private fun createFileFromBitmap(bitmap: Bitmap) {
@@ -96,6 +89,7 @@ internal class ImageGalleryManager(
                 resolver.openOutputStream(it)?.use { stream ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, stream)
                     cleanResources(stream, bitmap)
+                    callback?.onImageSaved(it)
                 }
             }
         }
@@ -111,23 +105,6 @@ internal class ImageGalleryManager(
         fileOutputStream?.close()
         bitmap?.recycle()
     }
-
-    /**
-     * Go to device settings
-     *
-     */
-    private fun openSettings(context: Context) {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts("package", context.packageName, null)
-        intent.data = uri
-        context.startActivity(intent)
-    }
-
-    /**
-     * @return the name of the meli album where to store pictures
-     */
-    private fun getAlbumName(context: Context) = context.getString(R.string.image_gallery_pictures_album_name)
 
     private fun getImageName() = UUID.randomUUID().toString()
 

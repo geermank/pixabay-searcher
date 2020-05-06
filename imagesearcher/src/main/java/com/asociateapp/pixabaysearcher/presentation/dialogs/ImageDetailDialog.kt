@@ -1,11 +1,11 @@
 package com.asociateapp.pixabaysearcher.presentation.dialogs
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.asociateapp.pixabaysearcher.R
 import com.asociateapp.pixabaysearcher.utils.*
@@ -13,13 +13,8 @@ import kotlinx.android.synthetic.main.dialog_image_detail.*
 
 internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImageSavedListener {
 
-    override fun onImageSaved() {
-        dismiss()
-        Toast.makeText(context, "Iuju, guardamos la imagen", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onImageSaveError(message: String, buttonMessage: String, action: () -> Unit) {
-
+    interface OnImageInteractListener {
+        fun onImageDownloaded(uri: Uri)
     }
 
     companion object {
@@ -37,18 +32,16 @@ internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImage
     }
 
     private val galleryManager by lazy {
-        context?.let {
-            ImageGalleryManager(it, permissionManager).also { galleryManager -> galleryManager.setOnImageSavedListener(this) }
+        context?.let { context ->
+            ImageGalleryManager(context, permissionManager).also { it.setOnImageSavedListener(this) }
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionManager.onRequestPermissionResult(permissions, grantResults)
+    private var onImageInteractListener: OnImageInteractListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onImageInteractListener = context as? OnImageInteractListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +83,24 @@ internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImage
 
     private fun hideLoading() {
         pb.changeVisibility(false)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionManager.onRequestPermissionResult(permissions, grantResults)
+    }
+
+    override fun onImageSaved(imageUri: Uri) {
+        dismiss()
+        onImageInteractListener?.onImageDownloaded(imageUri)
+    }
+
+    override fun onImageSaveError(message: String) {
+        // TODO handle error
     }
 
 }
