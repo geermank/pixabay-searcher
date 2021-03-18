@@ -1,0 +1,51 @@
+project.ext {
+
+    // Google
+    materialDesignVersion = "1.3.0"
+    constraintLayoutVersion = "2.0.4"
+    appCompatVersion = "1.2.0"
+    coreKtxVersion = "1.3.2"
+    pagingVersion = "2.1.2"
+
+    // Hilt
+    hiltViewModelVersion = "1.0.0-alpha02"
+
+    // Ktx libraries
+    fragmentKtxVersion = "1.2.5"
+
+    // testing libraries
+    junitVersion = "4.+"
+    androidJunitVersion = "1.1.2"
+    expressoVersion = "3.3.0"
+    mockitoVersion = "3.3.0"
+    coroutinesTestVersion = "1.4.3"
+    archCoreVersion = "2.1.0"
+
+    google = [
+        materialDesign: "com.google.android.material:material:$materialDesignVersion",
+        constraintLayout: "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
+        appCompat: "androidx.appcompat:appcompat:$appCompatVersion",
+        coreKtx: "androidx.core:core-ktx:$coreKtxVersion",
+        paging: "androidx.paging:paging-runtime-ktx:$pagingVersion"
+    ]
+
+    hilt = [
+        library: "com.google.dagger:hilt-android:$hiltVersion",
+        compiler: "com.google.dagger:hilt-android-compiler:$hiltVersion",
+        viewModel: "androidx.hilt:hilt-lifecycle-viewmodel:$hiltViewModelVersion",
+        viewModelCompiler: "androidx.hilt:hilt-compiler:$hiltViewModelVersion"
+    ]
+
+    androidKtx = [
+        fragment: "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+    ]
+
+    testing = [
+        junit: "junit:junit:$junitVersion",
+        androidJunit: "androidx.test.ext:junit:$androidJunitVersion",
+        expresso: "androidx.test.espresso:espresso-core:$expressoVersion",
+        mockito: "org.mockito:mockito-core:$mockitoVersion",
+        coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion",
+        archCore: "androidx.arch.core:core-testing:$archCoreVersion"
+    ]
+}

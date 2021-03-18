@@ -1,16 +1,18 @@
 apply plugin: 'com.android.library'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'kotlin-kapt'
 
 group = 'com.github.asociate'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,34 +23,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        targetCompatibility = "8"
-        sourceCompatibility = "8"
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    viewBinding {
+        enabled = true
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
 
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation "androidx.cardview:cardview:1.0.0"
-    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
+    implementation rootProject.ext.google.coreKtx
+    implementation rootProject.ext.google.appCompat
+    implementation rootProject.ext.google.materialDesign
+    implementation rootProject.ext.google.constraintLayout
 
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    // testing
+    testImplementation rootProject.ext.testing.junit
+    testImplementation rootProject.ext.testing.mockito
+    testImplementation rootProject.ext.testing.coroutines
+    testImplementation rootProject.ext.testing.archCore
+    androidTestImplementation rootProject.ext.testing.androidJunit
+    androidTestImplementation rootProject.ext.testing.expresso
 
-    implementation "com.squareup.picasso:picasso:2.71828"
+    // ktx
+    implementation rootProject.ext.androidKtx.fragment
 
-    implementation "com.squareup.retrofit2:converter-moshi:2.7.2"
-    implementation "com.squareup.retrofit2:retrofit:2.7.2"
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.0'
+    // hilt
+    implementation rootProject.ext.hilt.library
+    implementation rootProject.ext.hilt.viewModel
+    kapt rootProject.ext.hilt.compiler
+    kapt rootProject.ext.hilt.viewModelCompiler
 
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    // paging
+    implementation rootProject.ext.google.paging
+
+    // picasso
+    def picassoVersion = "2.71828"
+    implementation "com.squareup.picasso:picasso:$picassoVersion"
+
+    // retrofit and networking
+    def retrofitVersion = "2.9.0"
+    def interceptorVersion = "4.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$interceptorVersion"
 }

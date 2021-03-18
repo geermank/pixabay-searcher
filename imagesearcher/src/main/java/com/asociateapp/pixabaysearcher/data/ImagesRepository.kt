@@ -1,10 +1,10 @@
 package com.asociateapp.pixabaysearcher.data
 
-import com.asociateapp.pixabaysearcher.data.api.ImagesApi
+import com.asociateapp.pixabaysearcher.data.api.ApiParams
+import com.asociateapp.pixabaysearcher.data.api.images.ImagesApi
+import javax.inject.Inject
 
-internal class ImagesRepository(private val imagesApi: ImagesApi) {
+internal class ImagesRepository @Inject constructor(private val imagesApi: ImagesApi) {
 
-    fun searchImagesByTerm(apiKey: String, itemsPerPage: Int, value: String) =
-        imagesApi.searchByTerm(apiKey, itemsPerPage, value)
-
+    suspend fun searchImagesByTerm(apiParams: ApiParams) = imagesApi.searchByTerm(apiParams)
 }

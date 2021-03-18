@@ -7,8 +7,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
+        android:name=".ImageGalleryApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation.GalleryActivity"/>
+        <activity android:name=".presentation.imagegallery.ImageGalleryActivity"/>
     </application>
 
 </manifest>
