@@ -15,6 +15,6 @@ internal class ImagesApi @Inject constructor() : BaseApi() {
     }
 
     override fun getBaseUrl(): String {
-        return "https://pixabay.com/"
+        return "https://www.pixabay.com/"
     }
 }

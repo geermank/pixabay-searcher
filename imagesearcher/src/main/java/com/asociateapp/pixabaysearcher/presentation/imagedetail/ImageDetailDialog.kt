@@ -10,11 +10,12 @@ import androidx.fragment.app.DialogFragment
 import com.asociateapp.pixabaysearcher.databinding.DialogImageDetailBinding
 import com.asociateapp.pixabaysearcher.images.ImageGalleryManager
 import com.asociateapp.pixabaysearcher.images.ImageLoader
+import com.asociateapp.pixabaysearcher.presentation.BaseDialogFragment
 import com.asociateapp.pixabaysearcher.utils.*
 import com.asociateapp.pixabaysearcher.utils.extensions.asBitmap
 import com.asociateapp.pixabaysearcher.utils.extensions.changeVisibility
 
-internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImageSavedListener {
+internal class ImageDetailDialog : BaseDialogFragment(), ImageGalleryManager.OnImageSavedListener {
 
     interface OnImageInteractListener {
         fun onImageDownloaded(uri: Uri)
@@ -78,10 +79,8 @@ internal class ImageDetailDialog : DialogFragment(), ImageGalleryManager.OnImage
     }
 
     private fun setOnDownloadClickListener() {
-        binding.ivDownload.run {
-            setOnClickListener {
-                galleryManager?.save(binding.ivImage.asBitmap())
-            }
+        binding.ivDownload.setOnClickListener {
+            galleryManager?.save(binding.ivImage.asBitmap())
         }
     }
 
