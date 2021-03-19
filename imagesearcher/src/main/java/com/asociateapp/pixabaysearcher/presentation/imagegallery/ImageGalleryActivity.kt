@@ -2,6 +2,7 @@ package com.asociateapp.pixabaysearcher.presentation.imagegallery
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ImageGalleryActivity : BaseActivity(), OnListItemClickListener<ImageDto>, ImageDetailDialog.OnImageInteractListener {
 
     private val viewModel: GalleryViewModel by viewModels()
-    private val adapter = ImageGalleryAdapter(this)
+    private val imagesAdapter = ImageGalleryAdapter(this)
 
     private lateinit var binding: ActivityImageGalleryBinding
 
@@ -42,19 +43,21 @@ class ImageGalleryActivity : BaseActivity(), OnListItemClickListener<ImageDto>, 
         }
     }
 
-    private fun observeImages() {
-        viewModel.images.observe(this) {
-            hideLoadingIfNotEmpty(it)
-            adapter.submitList(it)
+    private fun setUpImagesRecyclerView() {
+        binding.rvImages.apply {
+            layoutManager = GridLayoutManager(
+                this@ImageGalleryActivity,
+                resources.getInteger(R.integer.gallery_image_spans)
+            )
+            adapter = imagesAdapter
+            addItemDecoration(getGalleryDecorator())
         }
     }
 
-    private fun setUpImagesRecyclerView() {
-        val gridLayoutManager = GridLayoutManager(this, resources.getInteger(R.integer.gallery_image_spans))
-        binding.rvImages.apply {
-            adapter = this@ImageGalleryActivity.adapter
-            layoutManager = gridLayoutManager
-            addItemDecoration(getGalleryDecorator())
+    private fun observeImages() {
+        viewModel.images.observe(this) {
+            hideLoadingIfNotEmpty(it)
+            imagesAdapter.submitList(it)
         }
     }
 
@@ -80,5 +83,12 @@ class ImageGalleryActivity : BaseActivity(), OnListItemClickListener<ImageDto>, 
 
     private fun hideLoadingIfNotEmpty(items: PagedList<ImageDto>) {
         binding.pb.changeVisibility(false)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (isHomeMenuItem(item)) {
+            super.onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
