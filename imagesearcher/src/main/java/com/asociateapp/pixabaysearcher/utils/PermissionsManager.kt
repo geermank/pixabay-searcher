@@ -13,7 +13,7 @@ internal class PermissionsManager(private val activity: Activity) {
 
     private var fragment: Fragment? = null
 
-    constructor(fragment: Fragment): this(fragment.activity!!) {
+    constructor(fragment: Fragment): this(fragment.requireActivity()) {
         this.fragment = fragment
     }
 

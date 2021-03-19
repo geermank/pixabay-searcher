@@ -62,7 +62,7 @@ internal class ImageGalleryManager(
      * If storage permissions weren't granted, prompts the user to grant them
      */
     fun save(image: Bitmap) {
-        this.temporaryBitmap = Bitmap.createBitmap(image)
+        this.temporaryBitmap = image
         this.permissionsManager.requestPermissionsIfNeeded(permissionsNeededForStorage())
     }
 
@@ -77,7 +77,6 @@ internal class ImageGalleryManager(
 
     private fun createFileFromBitmap(bitmap: Bitmap) {
         Executors.newSingleThreadExecutor().submit {
-            val resolver = context.contentResolver
             val imageCollection = MediaStore.Images.Media.getContentUri(getVolume())
 
             val newImage = ContentValues().apply {
@@ -85,12 +84,12 @@ internal class ImageGalleryManager(
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
             }
 
-            val uri = resolver.insert(imageCollection, newImage)
-            uri?.let {
-                resolver.openOutputStream(it)?.use { stream ->
+            val resolver = context.contentResolver
+            resolver.insert(imageCollection, newImage)?.let { uri ->
+                resolver.openOutputStream(uri)?.use { stream ->
                     bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_COMPRESSION_QUALITY, stream)
                     cleanResources(stream, bitmap)
-                    notifySuccess(it)
+                    notifySuccess(uri)
                 }
             }
         }

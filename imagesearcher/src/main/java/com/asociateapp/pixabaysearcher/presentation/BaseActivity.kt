@@ -27,9 +27,8 @@ abstract class BaseActivity : AppCompatActivity() {
         return menuItem.itemId == android.R.id.home
     }
 
-    private fun setStatusBarColor(color: Int) {
+    protected fun setStatusBarColor(color: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             window.statusBarColor = color
         }
     }
